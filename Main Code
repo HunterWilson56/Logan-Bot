@@ -1,0 +1,95 @@
+const Discord = require('discord.js');
+
+var client = new Discord.Client();
+var embed = new Discord.RichEmbed();
+
+client.on("ready", function() {
+    var clientonmessage = `
+------------------------------------------------------
+> Logging in...
+------------------------------------------------------
+Logged in as ${client.user.tag}
+Working on ${client.guilds.size} servers!
+${client.channels.size} channels and ${client.users.size} users cached!
+I am logged in and ready to roll!
+LET'S GO!
+------------------------------------------------------
+----------Bot created by Tea Cup#0001-----------
+------------------------------------------------------
+-----------------Bot's commands logs------------------`
+
+    console.log(clientonmessage);
+      client.user.setActivity(
+        "l.help | vrs.2.4 |",
+        "https://www.twitch.tv/xxwilsongamingxx"
+      );
+});
+
+
+
+client.on('guildMemberAdd', member => {
+    // Send the message to a designated channel on a server:
+    const channel = member.guild.channels.find('name', 'welcome');
+    // Do nothing if the channel wasn't found on this server
+    if (!channel) return;
+    // Send the message, mentioning the member
+    channel.send(`Welcome to the server, ${member}`);
+  });
+
+  client.on('message', message => {
+    // If the message is "what is my avatar"
+    if (message.content === 'l.avatar') {
+      // Send the user's avatar URL
+      message.channel.send(message.author.avatarURL);
+    }
+
+  
+  });
+
+  client.on("guildCreate", guild => {
+    console.log(`The bot just joined to ${guild.name}, Owned by ${guild.owner.user.tag}`);
+
+    var guildMSG = guild.channels.find('name', 'general');
+
+    guildMSG.send(`
+Hello there! My  name is \`Logan\`!\n\
+This bot created by **Tea Cup#0001**\n\
+For more info type \`l.help\`!`);
+});
+
+// Logs of the bot leaves a server
+client.on("guildDelete", guild => {
+    console.log(`The bot has been left ${guild.name}, Owned by ${guild.owner.user.tag}`);
+});
+
+client.on("guildCreate", guild => {
+    // This event triggers when the bot joins a guild.
+    console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+    client.user.setActivity(
+        "l.help |Servers ${bot.guilds.size} | vrs.2.4 ",
+        "https://www.twitch.tv/xxwilsongamingxx"
+      );
+});
+  
+  client.on("guildDelete", guild => {
+    // this event triggers when the bot is removed from a guild.
+    console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
+    client.user.setActivity(
+        " l.help |Servers ${bot.guilds.size} | vrs.2.4 ",
+        "https://www.twitch.tv/xxwilsongamingxx"
+        
+      );
+});
+
+client.on("message", async message => {
+    if (message.author.bot) return;
+    if (message.content.indexOf("l.") !== 0) return;
+    const args = message.content.slice("l.".length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
+    if(command === "ping") {
+        const m = await message.channel.send("Ping?");
+        m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
+    }
+});
+
+client.login('SUPERSECRETE_BOTTOKEN');
