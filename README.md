@@ -8,5 +8,5 @@ I added my Main Code whitch is like when i start up logan but i want you to know
 
 --------------------------------------------------------------------------------------------------------------------------
 Logans Stats [![Discord Bots](https://discordbots.org/api/widget/status/408070424484904960.svg?noavatar=true)](https://discordbots.org/bot/408070424484904960)[![Discord Bots](https://discordbots.org/api/widget/servers/408070424484904960.svg?noavatar=true)](https://discordbots.org/bot/408070424484904960)
-LOgans Support Discord > https://discord.gg/9qT9eQ6
+Logans Support Discord > https://discord.gg/9qT9eQ6
 
