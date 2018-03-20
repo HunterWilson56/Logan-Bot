@@ -92,4 +92,10 @@ client.on("message", async message => {
     }
 });
 
+client.on('message', function (message) {
+	if (message.content === 'l.roll') {
+		return message.reply(`U got a ${Math.floor((Math.random() * 6) + 1)}`);
+	  }
+});
+
 client.login('SUPERSECRETE_BOTTOKEN');
