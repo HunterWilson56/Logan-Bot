@@ -10,7 +10,7 @@ bot.on('ready', () => {
    
 bot.on("message", function(message)  {
     
-    if(message.content.includes("Ass")) {
+    if(message.content.includes("Ass")) {   //FYI if you type assistant your bot will delete it so to fixthat take out the .includes so it should look like ``if(message.content == 'ass')``//
         message.delete();
         message.reply("Please do not say that!")
     }
