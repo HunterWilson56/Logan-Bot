@@ -37,9 +37,10 @@ bot.on('message', (message) => {
         message.channel.sendMessage({embed:{
 
     "title": "Help!",
-    "description": "Hello Thank you for activating my help proticall\n (My Prefix is a lowercase l and a . `l.`) \n |if your wondering about Commands do `l.Commands`{The C is Capital!}|\n for other things join our support server >https://discord.gg/qQZa7ah or \n Contact Tea Cup#3343 \n \n  **Also For My Auto Welcome You Need To Make an channel named welcome and when ever someone joins i will welcome them!** ",
+    "description": "Hello Thank you for activating my help command.\n\n My prefix is a lowercase l and a . like so. `l.` \n If you want commands, you can do the command `l.Commands`. Remember, the `C` is capital.\n For support, please join our support server, [here](https://discord.gg/qQZa7ah). The invite code is `qQZa7ah`. \n\n For my welcomer feature, create a channel called `welcome`.",
     "color": 1476585,
-    "timestamp": new Date(),
+    
+		"timestamp": new Date(),
     "footer": {
       "icon_url": "https://cdn.discordapp.com/attachments/398489037431898113/411628424646623242/8b3b31dd-0db9-4183-b656-e0d1989164e4.jpg",
       "text": "© Logan 2018",
@@ -58,18 +59,26 @@ bot.on('message', (message) => {
     if (message.content == prefix + "YTC") {
         message.channel.send({embed:{
 
-            "title": "This command Will link you to Hunters Youtube",
-            "description": "Youtube Channel https://www.youtube.com/channel/UC3b0KGYwku_iJ7_DREyPz9w",
+            "title": "Hunter & Cam's YT",
+            "description": "Hunter: https://www.youtube.com/channel/UC3b0KGYwku_iJ7_DREyPz9w \n\n Cam: https://www.youtube.com/channel/UC3syeck1TT34PQToDPowbvA",
             "color": 12406360,
+		"timestamp": new Date(),
+    "footer": {
+      "icon_url": "https://cdn.discordapp.com/attachments/398489037431898113/411628424646623242/8b3b31dd-0db9-4183-b656-e0d1989164e4.jpg",
+      "text": "© Logan 2018",
         }})
 
 }
     if (message.content == prefix + "invite") {
         message.channel.send({embed:{
 
-            "title": "To Add Logan To Your Discord",
-            "description": " [Click Here To Add](https://discordapp.com/oauth2/authorize?client_id=%20408070424484904960&scope=bot&permissions=2102525183)",
+            "title": "Add me to your discord!",
+            "description": "[Click Here To Add Me!](https://discordapp.com/oauth2/authorize?client_id=%20408070424484904960&scope=bot&permissions=2102525183)",
             "color": 2268623,
+		"timestamp": new Date(),
+    "footer": {
+      "icon_url": "https://cdn.discordapp.com/attachments/398489037431898113/411628424646623242/8b3b31dd-0db9-4183-b656-e0d1989164e4.jpg",
+      "text": "© Logan 2018",
         }})
 
     }
@@ -91,8 +100,8 @@ bot.on('message', (message) => {
     if (message.content == prefix + "games") {
         message.channel.send({embed:{
 
-            "title": "Commands For Games",
-            "description": "**__These Are The Games__** |``l.flip``|``l.hide``|~|more coming soon",
+            "title": "Game Commands",
+            "description": "Below you can find commands for games. If you want to suggest a game, please do `l.suggest`. \n\n`l.flip` | This command will flip a coin! \n`l.hide` | This command will play a small game of hide and seek.",
             "color": 1079907,
         }})
     }
@@ -106,7 +115,7 @@ bot.on('message', (message) => {
 
 
     if (message.content == prefix + 'tea') {
-        message.reply('Drink Tea ***Bish***');
+        message.reply('Drink Tea ***bish***!');
     
     }
 
@@ -130,7 +139,7 @@ bot.on('message', (message) => {
     if (message.content == prefix +  "suggest") {
         message.channel.send({embed:{
 
-            "title": "To Suggest Stuff Fo Logan",
+            "title": "To Suggest Features for Logan",
             "description": " [Click Here To Suggest](https://discord.gg/qQZa7ah)",
             "color": 2268623,
         }})
@@ -152,14 +161,14 @@ bot.on('message', (message) => {
 
 
         if (message.content == prefix +  'afk') {
-             message.channel.send('Your going afk? if so NO BODY BOTHER THIS DUDE!');
+             message.channel.send('You\'re going afk? If so, NOBODY BOTHER THIS DUDE!');
         }
     
 
         if (message.content == prefix +  "web") {
             message.channel.send({embed:{
     
-        "title": "Logans Website Info",
+        "title": "Logan\'s Website Info",
         "color": 16253959,
         "description": "Look At Our Cool Website! [Go Here](https://loganbot.xyz/) ",
         "timestamp": new Date(),
@@ -173,8 +182,8 @@ bot.on('message', (message) => {
         if (message.content == prefix +  "vote") {
             message.channel.send({embed:{
     
-        "title": "To Vote For Logan",
-        "description": "To Vote For Logan So We Can Grow! go [here](https://discordbots.org/bot/408070424484904960) ",
+        "title": "Vote for Logan",
+        "description": "Want to vote for Logan on DBL? Just go [here](https://discordbots.org/bot/408070424484904960).",
         "color": 16253959,
         "timestamp": new Date(),
         "footer": {
@@ -188,7 +197,7 @@ bot.on('message', (message) => {
             message.channel.send({embed:{
     
         "title": "Auto Welcome!",
-        "description": "Hi There! \n To set up my auto welcome read steps below!\n `1st- Create An Channel named 'welcome' then make sure i can post in it!`\n and you should be all setup\n For Any Question's Or Concerns Contact Tea Cup#3343!  ",
+        "description": "Hi There! \n To set up my auto welcome read steps below!\n `1st- Create An Channel named 'welcome', then make sure I can post in it!\n\nYou should be all setup! If you need help, please do `l.suggest`.",
         "color": 16253959,
         "timestamp": new Date(),
         "footer": {
