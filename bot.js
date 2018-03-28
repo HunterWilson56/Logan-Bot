@@ -25,7 +25,7 @@ bot.on('message', function(message) {
         message.channel.sendMessage({embed:{
 
     "title": "Help!",
-    "description": "Hello Thank you for activating my help proticall\n (My Prefix is a lowercase l and a . `l.`) \n |if your wondering about Commands do `l.Commands`{The C is Capital!}|\n for other things join our support server >https://discord.gg/qQZa7ah or \n Contact Tea Cup#0001 \n \n  **Also For My Auto Welcome You Need To Make an channel named welcome and when ever someone joins i will welcome them!** ",
+    "description": "Hello! Thank you for activating my help protocol.\n (My Prefix is a lowercase l and a . `l.`) \n |if your wondering about Commands do `l.Commands`{The C is Capital!}|\n for other things join our support server >https://discord.gg/qQZa7ah or \n Contact Tea Cup#0001 \n \n  **Also For My Auto Welcome You Need To Make an channel named welcome and when ever someone joins i will welcome them!** ",
     "color": 1476585,
     "timestamp": new Date(),
     "footer": {
