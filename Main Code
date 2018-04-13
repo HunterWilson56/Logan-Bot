@@ -1,12 +1,33 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const mentionHook = new Discord.WebhookClient("Webhook id", "Webhook Token");
+const weather = require('weather-js');
+const mentionHook = new Discord.WebhookClient("WEbHOOK_ID", "WEBHOOK_TOKEN");
 const moment = require("moment");
 const config = require("./config.json");
 const settings = require("./settings.json");
+const help = require("./botconfig.json");
+var ffmpeg = require('FFMPEG');
+const bot = new Discord.Client({disableEveryone: true});
+bot.commands = new Discord.Collection();
+
+
 
 var embed = new Discord.RichEmbed();
 const randomColor = "#000000".replace(/0/g, function () { return (~~(Math.random() * 16)).toString(16); });
+const DBL = require('dblapi.js');
+const dbl = new DBL('', { webhookPort: 5009, webhookAuth: 'password' });
+dbl.webhook.on('ready', hook => {
+  console.log(`Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
+});
+dbl.webhook.on('vote', vote => {
+  console.log(vote);
+  // Do what you need to do
+});
+client.on('ready', () => {
+    setInterval(() => {
+        dbl.postStats(client.guilds.size);
+    }, 1800000);
+});
 //const Manager = new Discord.ShardingManager('./index.js');
 //Manager.spawn(2); 
 const tools = require("./eval.js");
@@ -33,40 +54,98 @@ LET'S GO!
 });//l.help | on ${client.guilds.size} servers|Vrs;1.6.2
 
 
+function hook(channel, title, message, color, avatar) { // This function uses quite a few options. The last 2 are optional.
 
-client.on("guildCreate", guild => {
-    console.log(`The bot just joined to ${guild.name}, Owned by ${guild.owner.user.tag}  with ${guild.memberCount} members.`);
+    // Reassign default parameters - If any are blank.
+    if (!channel) return console.log('Channel not specified.');
+    if (!title) return console.log('Title not specified.');
+    if (!message) return console.log('Message not specified.');
+    if (!color) color = 'd9a744'; // This is an optional variable. Therefore the default HEX color will be whatever you post there. Mine will be d9a744
+    if (!avatar) avatar = 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png' // This is also an optional variable, you can change the default to any icon.
 
-    var guild = guild.channels.find('name', 'general,chat');
+    // We want to remove spaces from color & url, since they might have it on the sides.
+    color = color.replace(/\s/g, '');
+    avatar = avatar.replace(/\s/g, '');
 
-    guild.channel.send(`
-Hello there! My original name is \`Logan\`!\n\
-This bot created by **Tea Cup#3343**\n\
-For more info type \`l.help\`!\n\
-\`Logan's - Official Server:\` https://discord.gg/6mvvfSm`);
-});
+    // This is the start of creating the webhook
+    channel.fetchWebhooks() // This gets the webhooks in the channel
+        .then(webhook => {
+
+            // Fetches the webhook we will use for each hook
+            let foundHook = webhook.find('name', 'Webhook'); // You can rename 'Webhook' to the name of your bot if you like, people will see if under the webhooks tab of the channel.
+
+            // This runs if the webhook is not found.
+            if (!foundHook) {
+                channel.createWebhook('Webhook', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png') // Make sure this is the same thing for when you search for the webhook. The png image will be the default image seen under the channel. Change it to whatever you want.
+                    .then(webhook => {
+                        // Finally send the webhook
+                        webhook.send('', {
+                            "username": title,
+                            "avatarURL": avatar,
+                            "embeds": [{
+                                "color": parseInt(`0x${color}`),
+                                "description":message
+                            }]
+                        })
+                            .catch(error => { // We also want to make sure if an error is found, to report it in chat.
+                                console.log(error);
+                                return channel.send('**Something went wrong when sending the webhook. Please check console.**');
+                            })
+                    })
+            } else { // That webhook was only for if it couldn't find the original webhook
+                foundHook.send('', { // This means you can just copy and paste the webhook & catch part.
+                    "username": title,
+                    "avatarURL": avatar,
+                    "embeds": [{
+                        "color": parseInt(`0x${color}`),
+                        "description":message
+                    }]
+                })
+                    .catch(error => { // We also want to make sure if an error is found, to report it in chat.
+                        console.log(error);
+                        return channel.send('**Something went wrong when sending the webhook. Please check console.**');
+                    })
+                }
+
+        })
+
+}
 
 
+  client.on('guildMemberAdd', member => {
+	const members = member.guild.memberCount;
+	const channel = member.guild.channels.find('name', 'welcome');
+	if (!channel) return;
+	let role = member.guild.roles.find(`name`, "User");
+	
+	let Embed = new Discord.RichEmbed()
+	.setTitle(`${member.displayName}, Welcome to ${member.guild.name}`)
+    .setColor(randomColor)	
+	.setDescription(`Welcome My Friend!`)
+	.addField('Users: ', `${members}`, true)
+	channel.send(Embed);
+	});
+	client.on('guildMemberRemove', member => {
+	const channel = member.guild.channels.find('name', 'welcome');
+	if (!channel) return;
+	const members = member.guild.memberCount;
+	let Embed = new Discord.RichEmbed()
+    .setColor(randomColor)
+	.setDescription(`${member.displayName}, has left the server! We have ${members} members now.`)
 
-client.on('guildMemberAdd', member => {
-  
-    // Send the message to a designated channel on a server:
-    const channel = member.guild.channels.find('name', 'welcome');
-    // Do nothing if the channel wasn't found on this server
-    if (!channel) return;
+	channel.send(Embed);
+    });
+    
+	client.on('guildCreate', guild => {
 
-    // Send the message, mentioning the member
-    var embed = new Discord.RichEmbed()
-    .setAuthor(`${member.user.tag} (${member.id})`, member.user.displayAvatarURL)
-    .addField("Welcome To", member.guild.name )
-    .setFooter("User Joined")
-    .setColor("#42f4b6")
-    .setTimestamp()
-    channel.send(embed)
-  });
+        guild.owner.send("Thank You for adding me  Type `l.help` in your server to see my commands! ");
+        
+        console.log(`The bot just joined to ${guild.name}, Owned by ${guild.owner.user.tag}`);
+        });
 
-
-
+    client.on("guildDelete", guild => {
+        console.log(`The bot has been left ${guild.name}, Owned by ${guild.owner.user.tag}`);
+    });
 
 const prefix = "l.";
 
@@ -76,9 +155,7 @@ const prefix = "l.";
 
 
 // Logs of the bot leaves a server
-client.on("guildDelete", guild => {
-    console.log(`The bot has been left ${guild.name}, Owned by ${guild.owner.user.tag}`);
-});
+
 
 
 
@@ -162,7 +239,25 @@ client.on("message", async message => {
     return;
   }
 
+  if(cmd === `${prefix}report`){
+        
 
+    let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!rUser) return message.channel.send("could not find the user!");
+    let reason = args.join(" ").slice(22);
+    
+    let reportEmbed = new Discord.RichEmbed()
+    .setDescription("reports")
+    .setColor("#9B59B6")
+    .addField("Reported By",`<@${message.author.id}> with ID ${message.author.id}`)
+    .addField("Reason", reason)
+    .addField("Reported User", `${rUser} with ID: ${rUser.id}`);
+
+    let incidentchannel = message.guild.channels.find(`name`, "mod-log");
+    if(!incidentchannel) return message.channel.send("Can't find `mod-log` channel.");
+
+    incidentchannel.send(reportEmbed);
+  }
 
   if(cmd === `${prefix}Commands`){
 
@@ -171,30 +266,110 @@ client.on("message", async message => {
     .setDescription("Commands For Logan Bot!")
     .setColor(randomColor)
     .setThumbnail(bicon)
-    .addField("Main Commands",'|``l.hi``|``l.invite``|``l.info``|\n|``l.help``|``l.yt``|``l.games``|\n |``l.suggest`|``l.ping``|``l.afk``|\n |``l.web``|``l.vote``|``l.stats``|\n |``l.log``|``l.roll`` |``l.autow``|\n |``l.8ball``|``~weather``|``l.serverinfo``|\n |``l.botinfo``|``l.userinfo``|``l.uptime``| \n|``l.softban``|``l.ownerhelp``|``l.mute``|  More Coming`` ')
+    .addField("Main Commands",'|``l.hi``|``l.invite``|``l.info``|\n|``l.help``|``l.yt``|``l.games``|\n |``l.suggest`|``l.ping``|``l.afk``|\n |``l.web``|``l.vote``|``l.stats``|\n |``l.log``|``l.roll`` |``l.autow``|\n |``l.8ball``|``l.weather``|``l.serverinfo``|\n |``l.botinfo``|``l.userinfo``|``l.uptime``| \n|``l.softban``|``l.ownerhelp``|``l.mute``| \n |``l.botservers``|``l.report``| \n|``l.translate``| More Coming', true )
+    .addField("Music",'JUST OPENED TODAY!(4/10/18) :tada: `l.play`|`l.stop`|`l.skip`|`l.pause`|`l.resume`|`l.volume`|`l.queue`| \n')
     .addField("Moderation",'l.modhelp' )
     .addField("Developer Only",'l.ownerhelp')
-    .addField("Level Command", 'Error404 This is not available to he public');
+    .addField("Level Commands", 'Locked :lock:');
 
     return message.channel.send(botembed);
 }
 
+
+
+});
+
+client.on("message", async message => {
+    if(message.author.bot) return;
+    if(message.channel.type === "dm") return;
+  
+    let prefix = "l.";
+    let messageArray = message.content.split(" ");
+    let cmd = messageArray[0];
+    let args = messageArray.slice(1);
+if(cmd === `${prefix}stats`){
+
+    let ms = client.uptime;
+    let cd = 24 * 60 * 60 * 1000; // Calc days
+    let ch = 60 * 60 * 1000; // Calc hours
+    let cm = 60 * 1000; // Calc minutes
+    let cs = 1000; // Calc seconds
+    let days = Math.floor(ms / cd);
+    let dms = days * cd; // Days, in ms
+    let hours = Math.floor((ms - dms) / ch);
+    let hms = hours * ch; // Hours, in ms
+    let minutes = Math.floor((ms - dms - hms) / cm);
+    let mms = minutes * cm; // Minutes, in ms
+    let seconds = Math.round((ms - dms - hms - mms) / cs);
+    if (seconds === 60) {
+        minutes++; // Increase by 1
+        seconds = 0;
+    }
+    if (minutes === 60) {
+        hours++; // Inc by 1
+        minutes = 0;
+    }
+    if (hours === 24) {
+        days++; // Increase by 1
+        hours = 0;
+    }
+    let dateStrings = [];
+
+    if (days === 1) {
+        dateStrings.push('**1** day');
+    } else if (days > 1) {
+        dateStrings.push('**' + String(days) + '** days');
+    }
+
+    if (hours === 1) {
+        dateStrings.push('**1** hour');
+    } else if (hours > 1) {
+        dateStrings.push('**' + String(hours) + '** hours');
+    }
+
+    if (minutes === 1) {
+        dateStrings.push('**1** minute');
+    } else if (minutes > 1) {
+        dateStrings.push('**' + String(minutes) + '** minutes');
+    }
+
+    if (seconds === 1) {
+        dateStrings.push('**1** second');
+    } else if (seconds > 1) {
+        dateStrings.push('**' + String(seconds) + '** seconds');
+    }
+
+    let dateString = '';
+    for (let i = 0; i < dateStrings.length - 1; i++) {
+        dateString += dateStrings[i];
+        dateString += ', ';
+    }
+    if (dateStrings.length >= 2) {
+        dateString = dateString.slice(0, dateString.length - 2) + dateString.slice(dateString.length - 1);
+        dateString += 'and ';
+    }
+    dateString += dateStrings[dateStrings.length - 1];
+    let bicon = client.user.displayAvatarURL;
+    let statsembed = new Discord.RichEmbed()
+    .setDescription("Stats")
+    .setColor(randomColor)
+    .setThumbnail(bicon)
+    .addField("Servers",client.guilds.size)
+    .addField("Users",client.users.size)
+    .addField("Uptime",dateString)
+
+    
+
+
+    return message.channel.send(statsembed);
+}
+
+
+// This episode will be going over the hook command.
 });
 
 
 
-client.on("message", (message) => {
-  if (message.author.id === client.user.id || message.author.bot) return;
-  if (message.isMentioned("338192747754160138") || message.mentions.everyone || (message.guild && message.mentions.roles.filter(r => message.guild.member("338192747754160138").roles.has(r.id)).size > 0)) {
-      if (message.author.id === "338192747754160138") return;
-      // Additional Code
-      mentionHook.send("You were mentioned!");
-  }
-  let args = message.content.split(" ").slice(1);
-  if (message.content.startsWith(`${prefix} ping`)) {
-    message.channel.send("pong!");
-  }
-});
 
 client.on("message", async message => {
   if (message.author.equals(client.user)) return;
@@ -241,7 +416,7 @@ client.on("message", async message => {
           },
           {
             name: "Social Media",
-            value: " **Soon**"
+            value: " [Steam]() "
           },
           {
             name: "Invite the bot here",
@@ -339,7 +514,47 @@ client.on("message", async message => {
         message.reply("Please mention someone :thinking:"); //Reply with a mention saying "Invalid user."
   }
     break;
+    case "translate":
+    console.log(`${message.author.tag} used the ${settings.botPREFIX}translate command!`);
 
+    const translate = require('google-translate-api');
+
+let toTrans = message.content.split(' ').slice(1);
+let language;
+
+language = toTrans[toTrans.length - 2] === 'to' ? toTrans.slice(toTrans.length - 2, toTrans.length)[1].trim() : undefined;
+if (!language) {
+    return message.reply(`Please supply valid agruments.\n**Example** \`${settings.botPREFIX}translate [text] to [language]\``);
+}
+let finalToTrans = toTrans.slice(toTrans.length - toTrans.length, toTrans.length - 2).join(' ');
+translate(finalToTrans, {to: language}).then(res => {
+        message.channel.send({embed: {
+            color: 3447003,
+            author: {
+              name: 'Logan\'s translator',
+              icon_url: client.user.avatarURL
+            },
+            fields: [{
+                name: "Translator",
+                value: `**From:** ${res.from.language.iso}\n\`\`\`${finalToTrans}\`\`\`\n**To: **${language}\n\`\`\`${res.text}\`\`\``
+              }
+            ],
+            timestamp: new Date(),
+            footer: {
+              icon_url: client.user.avatarURL,
+              text: "© Logan 2018"
+            }
+          }
+        });
+}).catch(err => {
+    message.channel.send({
+        embed: {
+            description: '❌ We could not find the supplied language.',
+            color: 0xE8642B
+        }
+    });
+});
+break;
     case "uptime":
     console.log(`${message.author.tag} used the ${settings.botPREFIX}uptime command!`);
 
@@ -446,6 +661,7 @@ client.on("message", async message => {
 **${settings.botPREFIX}kick** - Kicks a user out of the server! (Mederation only!)\n\
 **${settings.botPREFIX}mute** - Muted a user with a **muted** role! (Moderation only!)\n\
 **${settings.botPREFIX}unmute** - Unmutes a user and removes the **muted** role. (Moderation only!)\n\
+**${settings.botPREFIX}purge** - Deletes Messages
 **${settings.botPREFIX}softban** - Kicks a user and deletes his messages. (Moderation only!)`
         }
       ],
@@ -604,7 +820,7 @@ client.on("message", async message => {
 
   const botusername = message.content.split(' ').slice(1).join(' ');
 
-  if (message.author.id == settings.ownerID) {
+  if (message.author.id == '338192747754160138') {
       client.user.setUsername(botusername);
       message.reply('Done. :ok_hand:');
   } else {
@@ -619,7 +835,7 @@ client.on("message", async message => {
   const botavatar = message.content.split(' ').slice(1).join(' ');
   var request = require("request").defaults({ "encoding" : null });
 
-  if (message.author.id == settings.ownerID) {
+  if (message.author.id == '338192747754160138') {
 request(botavatar, function (err, res, body) {
 if (!err && res.statusCode === 200) {
   var data = "data:" + res.headers["content-type"] + ";base64," + new Buffer(body).toString("base64");
@@ -639,7 +855,7 @@ if (!err && res.statusCode === 200) {
 
   const botnickname = message.content.split(' ').slice(1).join(' ');
 
-  if (message.author.id == settings.ownerID){
+  if (message.author.id == '338192747754160138'){
       message.guild.members.get(client.user.id).setNickname(botnickname);
       message.channel.send('Done. :ok_hand:');
   } else {
@@ -652,30 +868,89 @@ if (!err && res.statusCode === 200) {
   console.log(`${message.author.tag} used the ${settings.botPREFIX}eval command!`);
 
   const clean = text => {
-      if (typeof(text) === "string")
-        return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-      else
-          return text;
+    if (typeof(text) === "string")
+      return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+    else
+        return text;
+  }
+
+    const evalargs = message.content.split(" ").slice(1);
+
+      if (message.author.id == settings.ownerID || message.author.id == '153478211207036929') {
+        try {
+            const code = args.join(" ");
+            let evaled = eval(code);
+            let rawEvaled = evaled;
+            if (typeof evaled !== "string")
+                evaled = require("util").inspect(evaled, { showHidden: false, depth: 3 });
+            let cleaned = clean(evaled);
+            if (args[0] != undefined && args[0] != '') {
+                try {
+                    let embed = new Discord.RichEmbed()
+                        .setColor('#AABBED')
+                        .setTitle('Evaluation')
+                        .addField('Evaluated', '```js\n' + code + '```')
+                        .addField('Result', '```xl\n' + cleaned + '```')
+                        .addField('Type', '```js\n' + (typeof rawEvaled).substr(0, 1).toUpperCase() + (typeof rawEvaled).substr(1) + '```');
+                    return message.channel.send(embed);
+                } catch (err) {
+                    require('hastebin-generator')(cleaned, 'js').then(link => {
+                        let embed = new Discord.RichEmbed()
+                            .setColor('#AABBED')
+                            .setTitle('Evaluation')
+                            .addField('Evaluated', '```js\n' + args.join(" ") + '```')
+                            .addField('Result', '[```xl\n' + 'CLICK' + '```](' + link + ')')
+                            .addField('Type', '```js\n' + (typeof rawEvaled).substr(0, 1).toUpperCase() + (typeof rawEvaled).substr(1) + '```')
+                        return message.channel.send(embed);
+                    });
+                }
+            } else {
+                try {
+                    let embed = new Discord.RichEmbed()
+                        .setColor('#AABBED')
+                        .setTitle('Evaluation')
+                        .addField('Evaluated', '```js\nundefined```')
+                        .addField('Result', '```xl\n' + cleaned + '```')
+                        .addField('Type', '```js\n' + (typeof rawEvaled).substr(0, 1).toUpperCase() + (typeof rawEvaled).substr(1) + '```');
+                    return message.channel.send(embed);
+                } catch (err) {
+                    require('hastebin-generator')(cleaned, 'js').then(link => {
+                        let embed = new Discord.RichEmbed()
+                            .setColor('#AABBED')
+                            .setTitle('Evaluation')
+                            .addField('Evaluated', '```js\nundefined```')
+                            .addField('Result', '[```xl\n' + 'CLICK' + '```](' + link + ')')
+                            .addField('Type', '```js\n' + (typeof rawEvaled).substr(0, 1).toUpperCase() + (typeof rawEvaled).substr(1) + '```')
+                        return message.channel.send(embed);
+                    });
+                }
+            }
+        } catch (err) {
+            let embed = new Discord.RichEmbed()
+                .setColor('#770306')
+                .setTitle('Error')
+                .addField('Evaluated', '```js\n' + args.join(" ") + '```')
+                .addField('Result', '```xl\n' + err.toString() + '```')
+                .addField('Type', '```js\nError```')
+            return message.channel.send(embed).catch(err => {
+                require('hastebin-generator')(err, 'js').then(link => {
+                    let embed = new Discord.RichEmbed()
+                        .setColor('#770306')
+                        .setTitle('Evaluation')
+                        .addField('Evaluated', '```js\n' + args.join(" ") + '```')
+                        .addField('Result', '[```xl\n' + 'CLICK' + '```](' + link + ')')
+                        .addField('Type', '```js\nError```');
+                    return message.channel.send(embed);
+                });
+            });
+        }
+        return;
+    } else {
+        message.reply('You don\'t own me!');
     }
 
-      const evalargs = message.content.split(" ").slice(1);
 
-        if (message.author.id == settings.ownerID || message.author.id == '153478211207036929') {
-        try {
-          const code = evalargs.join(" ");
-          let evaled = eval(code);
-
-          if (typeof evaled !== "string")
-            evaled = require("util").inspect(evaled);
-
-          message.channel.send(clean(evaled), {code:"xl"});
-        } catch (err) {
-          message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
-        }
-      } else {
-          message.delete();
-          message.channel.send(`\`📛\` You don't have permissions to execute that command.`);
-      };
+          
   break;
 
   case "say":
@@ -683,7 +958,7 @@ if (!err && res.statusCode === 200) {
 
   const botsay = message.content.split(' ').slice(1).join(' ');
 
-  if (message.author.id == settings.botPREFIX || message.author.id == "338192747754160138")
+  if (message.author.id == '338192747754160138' || message.author.id == '338192747754160138')
   {
       message.delete();
       message.channel.send(botsay);
@@ -696,7 +971,7 @@ if (!err && res.statusCode === 200) {
   case "shutdown":
   console.log(`${message.author.tag} used the ${settings.botPREFIX}shutdown command!`);
 
-  if (message.author.id == settings.ownerID || message.author.id == "153478211207036929") {
+  if (message.author.id == '338192747754160138' || message.author.id == '338192747754160138') { //399648813872185346
           const filterYes = m => m.content.startsWith('yes');
           message.reply('Shutting down... :skull:')
           .then(m => {
@@ -711,7 +986,7 @@ if (!err && res.statusCode === 200) {
   case "ownerhelp":
   console.log(`${message.author.tag} used the ${settings.botPREFIX}ownerhelp command!`);
 
-  if (message.author.id == settings.ownerID) {
+  if (message.author.id == '338192747754160138') {
       message.reply("Please check your direct messages :inbox_tray: (Owner commands.)");
 
       message.author.send({embed: {
@@ -883,5 +1158,58 @@ if (!err && res.statusCode === 200) {
   }
   }
 });
+    
+
+
+  
+
+    
+    client.on('message', function (message) {
+        if (message.content.startsWith('l.8ball')) {
+            const replies = ["It is certain",
+            "It is decidedly so",
+                "Without a doubt",
+            "Yes, definitely",
+                "You may rely on it",
+            "As I see it, yes",
+                "Most likely",
+            "Outlook good",
+                "Yes",
+            "Signs point to yes",
+                "Reply hazy try again",
+            "Ask again later",
+                "Better not tell you now",
+            "Cannot predict now",
+                "Concentrate and ask again",
+            "Don't count on it",
+                "My reply is no",
+            "My sources say no",
+                "Outlook not so good",
+            "Very doubtful"];
+                message.replytext = Math.floor((Math.random() * replies.length) + 0);
+            return message.reply(replies[message.replytext]);
+          }
+          if (message.content.startsWith(prefix + 'HOOK')) { // We are using a .startsWith because the command will have arguments.
+
+            // Delete the message that the user sends
+            message.delete();
+        
+            if (message === prefix + 'HOOK') { // This checks if the only thing they sent was 'Hook'
+                return hook(message.channel, 'Hook Usage', `${prefix}hook <title>, <message>, [HEXcolor], [avatarURL]\n\n**<> is required\n[] is optional**`,'FC8469','https://cdn4.iconfinder.com/data/icons/global-logistics-3/512/129-512.png') // Remeber that \n means new line. This is also using a custom HEX id, and an image.
+            }
+        
+            let hookArgs = message.content.slice(prefix.length + 4).split(","); // This slices the first 6 letters (prefix & the word hook) then splits them by 'commas'
+        
+            hook(message.channel, hookArgs[0], hookArgs[1], hookArgs[2], hookArgs[3]); // This is where it actually calls the hook.
+        }
+
+    });
+    
+          
+
+//Servers > ${bot.guilds.size} :greenTick: \n Users > ${bot.users.size} :greenTick:\n Uptiime > :soon~1: 
+    client.on("guildMemberAdd", (member) => {
+        console.log(`New User "${member.user.username}" has joined "${member.guild.name}"` );
+        });
 
 client.login('SUPERSECRETE_BOTTOKEN');
