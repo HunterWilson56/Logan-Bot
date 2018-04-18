@@ -8,7 +8,7 @@ I added my Main Code whitch is like when i start up logan but i want you to know
 
 -----------------------------------------------------------------------------------------------
 ## ** Help!** 
-If you need help go [Here]9https://discord.gg/9qT9eQ6)
+If you need help go [Here](https://discord.gg/9qT9eQ6)
 
 --------------------------------------------------------------------------------------------------------------------------
 ## Logan's Stats 
