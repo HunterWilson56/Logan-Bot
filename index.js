@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const weather = require('weather-js');
-const mentionHook = new Discord.WebhookClient("428273869359546369", "Huj8BVYOEec4ZRttJ2vuCTSJuyB_3UcCcaLkIzyOithSkSaqCKbF0KiK36MIaNLYLGV2");
+const mentionHook = new Discord.WebhookClient("", "");
 const moment = require("moment");
 const config = require("./config.json");
 const settings = require("./settings.json");
@@ -19,7 +19,7 @@ const randomColor = "#000000".replace(/0/g, function () { return (~~(Math.random
 
 const DBL = require('dblapi.js');
 
-const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQwODA3MDQyNDQ4NDkwNDk2MCIsImJvdCI6dHJ1ZSwiaWF0IjoxNTIyNDU3MTkzfQ.jzvqvJ-xtxkZ8eoNkmrn5V_PaP4A5DqQxk7pcKSsbgA', { webhookPort: 5000, webhookAuth: 'password' });
+const dbl = new DBL('DBL-TOKEN', { webhookPort: 5000, webhookAuth: 'password' });
 dbl.webhook.on('ready', hook => {
   console.log(`Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
 });
@@ -56,7 +56,7 @@ LET'S GO!
 //l.help | on ${client.guilds.size} servers|Vrs;1.6.2
 const fetch = require('snekfetch');
 async function postStats(client) {
-    const boatListKey = "n2vez235je17qm3ay3d63ygspfcz3k11ltlnjucomf5bldq5wd";
+    const boatListKey = "";
     try {
         await fetch.post("https://boat-list.glitch.me/api/stats/" + client.user.id + "/" + boatListKey + "/?count=" + client.guilds.size);
         console.log("Finished Posting Server Count");
@@ -67,7 +67,7 @@ async function postStats(client) {
 }
 
 async function postStats(client) {
-    const discordbotsKey = "d063z0lhrld3fxap0cvu5ba6as0xksat8ioswpoi1w1pe4ph35ez4xpum9nuv3ojq6jx428fxu7bafjgj4p0mblno95ktkp0ohrs";
+    const discordbotsKey = "";
     try {
         await fetch.post("https://discordbots.glitch.me/api/stats/" + client.user.id + "/" + boatListKey + "/?count=" + client.guilds.size);
         console.log("Finished Posting Server Count");
@@ -1428,4 +1428,4 @@ if (!err && res.statusCode === 200) {
 
         });
 
-client.login('NDA4MDcwNDI0NDg0OTA0OTYw.DZSMew.ocmZ9ewzBrzpsRCEO_tZL4kHQvU');
+client.login('TOKEN');
