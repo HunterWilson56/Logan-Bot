@@ -1,6 +1,35 @@
 { "token"  : "Bots_Token",
+
     "prefix" : "l.",
 
-  "ownerID": "338192747754160138"
+  "ownerID": "338192747754160138",
+
+  "ownerid": "338192747754160138",
+    
+    
+    "errortimeout": "5000",
+  
+    "swearfilter": false,
+    "discordinvite": false,
+    "tweetcommand": false,
+  
+    "white": "#ffffff",
+    "red": "#ff0000",
+    "orange": "#ffa500",
+    "yellow": "#ffff00",
+    "green": "#00ff00",
+    "blue": "#0000ff",
+    "purple": "#551a8b",
+  "currency" : "Credits:credit_card:",
+
+  "TeaCup" : {
+"DmAble": true
+},
+
+  "mode" : {
+  "matniance": true
+  }
+
+
 
   }
