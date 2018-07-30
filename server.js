@@ -2,7 +2,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const weather = require('weather-js');
-const mentionHook = new Discord.WebhookClient("428273869359546369", "Huj8BVYOEec4ZRttJ2vuCTSJuyB_3UcCcaLkIzyOithSkSaqCKbF0KiK36MIaNLYLGV2");
+const mentionHook = new Discord.WebhookClient("ID", "TOKEN");
 const moment = require("moment");
 const config = require("./config.json");
 const settings = require("./settings.json");
@@ -68,7 +68,7 @@ const randomColor = "#000000".replace(/0/g, function () { return (~~(Math.random
 
 
 const DBL = require("dblapi.js");
-const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQwODA3MDQyNDQ4NDkwNDk2MCIsImJvdCI6dHJ1ZSwiaWF0IjoxNTIyNDU3MTkzfQ.jzvqvJ-xtxkZ8eoNkmrn5V_PaP4A5DqQxk7pcKSsbgA', client);
+const dbl = new DBL('DBL_TOKEN', client);
 client.on('ready', () => {
     setInterval(() => {
         dbl.postStats(client.guilds.size);
@@ -389,4 +389,4 @@ client.elevation = message => {
 
 });
 
-client.login('NDA4MDcwNDI0NDg0OTA0OTYw.DfeCGg.4Qex0FL3A0PHOe6aH8SsiB4clQQ');
+client.login('');
