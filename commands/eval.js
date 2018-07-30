@@ -1,38 +1,56 @@
-const Discord = require("discord.js");
+const Discord = require('discord.js');
 const hastebin = require('hastebin-gen');
 
-module.exports.run = async (client, message, args) => {
- let embed = new Discord.RichEmbed()
-  .setTitle("Evaluation")
-  .setDescription("Sorry, the `eval` command can only be executed by the Developer.")
-  .setColor("#cdf785");
-  if(message.author.id !== '338192747754160138') return message.channel.send(embed);
-  
-  function clean(text) {
-  if (typeof(text) === "string")
-    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-  else
-      return text;
-}try {
-      const code = args.join(" ");
-      let evaled = eval(code);
-      let rawEvaled = evaled;
-      if (typeof evaled !== "string")
-        evaled = require("util").inspect(evaled);
+exports.run = async(client, message, args) => {
 
-  let embed = new Discord.RichEmbed()
-      .setTitle(`Evaluated in ${Math.round(client.ping)}ms`)
-      .addField(":inbox_tray: Input", `\`\`\`js\n${code}\n\`\`\``)
-      .addField(":outbox_tray: Output", `\`\`\`js\n${clean(evaled).replace(client.token, "Are you retarded?")}\n\`\`\``)
-      .addField('Type', `\`\`\`xl\n${(typeof rawEvaled).substr(0, 1).toUpperCase() + (typeof rawEvaled).substr(1)}\n\`\`\``)
-      .setColor('GREEN');
-      message.channel.send({embed});
-    } catch (err) {
-      
-      message.channel.send(`\`ERROR\` \`\`\`js\n${clean(err)}\n\`\`\``);
+    if (message.author.id !== '338192747754160138') {
+
+        const embed = new Discord.MessageEmbed()
+            .setFooter('You don\t have the proper permissions to run this.')
+            .setColor(0xffffff)
+
+        return send(embed)
+
     }
-}
 
-module.exports.help = {
-  name: "eval"
-}
+    function clean(text) {
+        if (typeof text !== 'string')
+            text = require('util').inspect(text, { depth: 0 })
+        let rege = new RegExp(client.token, "gi");
+        text = text
+            .replace(/`/g, '`' + String.fromCharCode(8203))
+            .replace(/@/g, '@' + String.fromCharCode(8203))
+            .replace(rege, '404: Missing Token')
+        return text;
+    };
+
+    async function send(embed) {
+        message.channel.send(embed);
+    }
+
+    const evalEmbed = new Discord.MessageEmbed().setColor(0xffffff)
+    const code = args.join(' ');
+    try {
+        const evaled = clean(await eval(code));
+        evalEmbed.addField('📥 Input', `\`\`\`\n${code}\n\`\`\``)
+        if (evaled.constructor.name === 'Promise') evalEmbed.addField('📤 Output (Promise)', `\`\`\`xl\n${evaled}\n\`\`\``)
+        else evalEmbed.addField('📤 Output', `\`\`\`xl\n${evaled}\n\`\`\``)
+        evalEmbed.setColor('0x42f468')
+        if (evaled.length < 800) { send(evalEmbed) }
+        else {
+            let url = await hastebin(evaled, "js").catch(err => console.log(err.stack));
+            const newEmbed = new Discord.MessageEmbed()
+                .addField('📥 Input', `\`\`\`\n${code}\n\`\`\``)
+                .addField('📤 Output', `\n**[${url}](${url})**`)
+                .setColor('0x42f468');
+            send(newEmbed);
+        }
+    }
+    catch (err) {
+        evalEmbed.setColor('0xff0000');
+        evalEmbed.addField('📤 Output', `\`\`\`xl\n${err}\n\`\`\``);
+
+        message.channel.send(evalEmbed);
+    }
+
+};

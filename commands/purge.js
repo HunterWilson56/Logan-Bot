@@ -6,15 +6,16 @@ async function purge() {
     message.delete(); // Lets delete the command message, so it doesnt interfere with the messages we are going to delete.
 
     // Now, we want to check if the user has the `bot-commander` role, you can change this to whatever you want.
-    if (!message.member.hasPermission("ADMINISTRATOR")) { // This checks to see if they DONT have it, the "!" inverts the true/false
-        message.channel.send('You need the \`Admin\`  to use this command.'); // This tells the user in chat that they need the role.
+    if (!message.member.hasPermission("MANAGE_MESSAGES"))
+  { // This checks to see if they DONT have it, the "!" inverts the true/false
+        message.channel.send('You need the \`Manage messages\`  to use this command.'); // This tells the user in chat that they need the role.
         return; // this returns the code, so the rest doesn't run.
     }
 
     // We want to check if the argument is a number
     if (isNaN(args[0])) {
         // Sends a message to the channel.
-        message.channel.send('Please use a number as your arguments. \n Usage: ' + prefix + 'purge <amount>'); //\n means new line.
+        message.channel.send('Please use a number as your arguments. \n Usage: l.rge <amount>'); //\n means new line.
         // Cancels out of the script, so the rest doesn't run.
         return;
     }

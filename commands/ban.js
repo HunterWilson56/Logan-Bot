@@ -25,6 +25,7 @@ module.exports.run = async (bot, message, args) => {
     .addField("Reason", bReason)
     bUser.send(embed);
   message.channel.send("<:tickYes:432418492889694210> **| That member has been banned.**")
+  
   bUser.ban(bReason)
   incidentchannel.send(banEmbed);
 }
