@@ -1,16 +1,15 @@
 
-
 const Discord = require('discord.js');
 const settings = require("../settings.json");
 module.exports.run = async (bot, message, args) => {
-    const logsCommands = bot.channels.get(settings.humanChannelid);
+    
 
-logsCommands.send(`${message.author.tag} used the ${settings.botPREFIX}help command!`);
-message.react('✅');
+
+message.react('☑');
 message.channel.send({embed:{
 
 "title": "Help!",
-"description": "Hello Thank you for activating my help proticall\n (My Prefix is a lowercase l and a . `l.`) \n |if your wondering about Commands do `l.Commands`{The C is Capital!}|\n for other things join our support server >https://discord.gg/qQZa7ah or \n Contact Tea Cup#3343 \n \n  **Also For My Auto Welcome You Need To Make an channel named welcome and when ever someone joins i will welcome them!** ",
+"description": "Hello Thank you for activating my help proticall\n (My Prefix is a lowercase l and a . `l.`) \n |if your wondering about Commands do `l.Commands`{The C is Capital!}|\n for other things join our support server >https://discord.gg/qQZa7ah or \n Contact Tea Cup#3343 \n If you make an channel named `audit-log` i will show message deletes & channel updates! \n  **Also For My Auto Welcome You Need To Make an channel named welcome and when ever someone joins i will welcome them!** ",
 "color": 1476585,
 "timestamp": new Date(),
 "footer": {
