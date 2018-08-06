@@ -1,7 +1,7 @@
 {
   "botPREFIX": "l.",
-  "botTOKEN": "NDA4MDcwNDI0NDg0OTA0OTYw.DVQNAQ.oT3cCjNk81bYqTedWaItjjY3AE4",
-  "weatherAPI": "25440f3627ec2cb1e485acd88463180a",
+  "botTOKEN": "BOT_TOKEN",
+  "weatherAPI": "",
   "ownerID": "338192747754160138",
   "logsChannelID": "433440328825962496",
   "humanChannelid":   "437370320001695754",
